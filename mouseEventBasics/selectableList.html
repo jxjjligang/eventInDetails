@@ -29,18 +29,24 @@
 
     <script>
         let selectedLis = [];
-        document.body.onclick = function (event) {
+        ul.onclick = function (event) {
             let target = event.target;
             if (target.tagName !== 'LI')
                 return;
 
-            if (!event.ctrlKey) {
+            if (!(event.ctrlKey || event.metaKey)) {
                 selectedLis.forEach(li => li.classList.remove('selected'));
                 selectedLis = [];
             }
             target.classList.add('selected')
             selectedLis.push(target);
         }
+
+        ul.onmousedown = function (event) {
+            return false;
+        }
+
+
     </script>
 
 </body>
