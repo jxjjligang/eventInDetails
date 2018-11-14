@@ -13,7 +13,6 @@
   .clock {
     border: 1px dashed black;
     padding: 5px;
-    display: inline-block;
     background: yellow;
     position: absolute;
     left: 0;
@@ -25,4 +24,5 @@
     background: #eee;
     border: 1px brown solid;
     padding: 3px;
+    top: 30px;
   }
