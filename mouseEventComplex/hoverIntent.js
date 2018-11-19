@@ -28,32 +28,33 @@ class HoverIntent {
         elem.addEventListener("mousemove", this.onMouseMove);
         // continue from this point
         this.lastMouseMove = undefined;
+        this.mouseMove = 1;
     }
 
     onMouseOver(event) {
         if (!this.isOver) {
             this.isOver = true;
-            console.log(`onMouseOver isOver:${this.isOver}`);
+            setTimeout(() => {
+                if (this.isOver)
+                    this.over();
+            }, 100);
         }
     }
 
     onMouseOut(event) {
-        out();
-        if (this.isOver === false)
-            return;
-
-        if (event.target !== this.elem)
-            return;
-
-        if (this.elem.contains(event.relatedTarget))
-            return;
-
         this.isOver = false;
+        if (this.elem.contains(event.target) || this.elem.contains(event.relatedTarget))
+            return;
+
+        this.out();
         console.log(`onMouseOut isOver:${this.isOver}`);
     }
 
+
     onMouseMove(event) {
-        this.isOver = true;
+        this.isOver = false;
+        console.log(`x:${event.clientX}, y:${event.clientY}, order:${this.mouseMove}`);
+        this.mouseMove++;
         if (this.lastMouseMove === undefined) {
             this.lastMouseMove = {
                 time: new Date(),
@@ -64,21 +65,20 @@ class HoverIntent {
         }
         else {
             let differene = new Date() - this.lastMouseMove.time;  // in milliseconDs
-            if (differene < 100)
-                return;
-            else {
-                let movedLength = Math.sqrt(Math.pow(this.lastMouseMove.x - event.clientX, 2) + Math.pow(this.lastMouseMove.y - event.clientY, 2));
-                let moveSpeed = movedLength / differene;
-                (moveSpeed < this.sensitivity) ? this.over() : this.out();
-                this.lastMouseMove = {
-                    time: new Date(),
-                    x: event.clientX,
-                    y: event.clientY
-                }
+            let movedLength = Math.sqrt(Math.pow(this.lastMouseMove.x - event.clientX, 2) + Math.pow(this.lastMouseMove.y - event.clientY, 2));
+            let moveSpeed = movedLength / differene;
+            console.log(`moveSpeed:${moveSpeed}`);
+            if (moveSpeed <= this.sensitivity)
+                this.over();
+            else
+                this.out();
+            this.lastMouseMove = {
+                time: new Date(),
+                x: event.clientX,
+                y: event.clientY
             }
 
         }
-        console.log(`onMouseMove isOver:${this.isOver}`);
     }
 
 
