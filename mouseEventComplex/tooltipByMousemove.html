@@ -66,18 +66,22 @@
 
     <script>
         let elementToTipdiv = new Map();
-        document.body.onmouseover = function (event) {
-            let target = event.target;
-            if (!target.dataset || !target.dataset.tooltip)
+        let prevElement;
+        document.body.onmousemove = function (event) {
+            let currentEle = document.elementFromPoint(event.clientX, event.clientY);
+            if (prevElement === currentEle)
                 return;
 
-            for (let [element, tipDiv] of elementToTipdiv)
-                tipDiv.hidden = true;
-            let tooltip = target.dataset.tooltip;
+            console.log(currentEle);
+            prevElement = currentEle;
+            hideAllTips();
+            if (!currentEle.dataset || !currentEle.dataset.tooltip)
+                return;
+
+            let tooltip = currentEle.dataset.tooltip;
             let divTooltip;
-            if (elementToTipdiv.has(target)) {
-                console.log('onmouseover: ' + tooltip + ' exists.')
-                divTooltip = elementToTipdiv.get(target);
+            if (elementToTipdiv.has(currentEle)) {
+                divTooltip = elementToTipdiv.get(currentEle);
                 divTooltip.hidden = false;
             }
             else {
@@ -85,25 +89,15 @@
                 divTooltip.className = 'tooltip';
                 divTooltip.textContent = tooltip;
                 document.body.appendChild(divTooltip);
-                elementToTipdiv.set(target, divTooltip);
+                elementToTipdiv.set(currentEle, divTooltip);
             }
-            let rect = target.getBoundingClientRect();
+            let rect = currentEle.getBoundingClientRect();
             divTooltip.style.left = rect.left + 'px';
             if (divTooltip.offsetHeight < rect.top)
                 divTooltip.style.top = (rect.top - divTooltip.offsetHeight) + 'px';
             else
                 divTooltip.style.top = (rect.top) + 'px';
-        }
 
-        document.body.onmouseout = function (event) {
-            if (elementToTipdiv.has(event.relatedTarget))
-                return;
-            let target = event.target;
-
-            if (target.dataset && target.dataset.tooltip && target.contains(event.relatedTarget))
-                hideAllTips(target);
-            else
-                hideAllTips();
         }
 
         function hideAllTips(except) {
