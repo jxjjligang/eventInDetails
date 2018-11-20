@@ -6,63 +6,44 @@
     <link rel="stylesheet" href="slider.css">
 </head>
 
-<body id="body" height="100%">
+<body id="body" style="height:2000px">
 
     <div id="slider" class="slider">
         <div class="thumb" id="thumbDiv"></div>
     </div>
 
     <script>
-
         let dragged = false;
         let shiftX = undefined;
         let sliderLeft = slider.getBoundingClientRect().left;
-        let sliderRight = sliderLeft + slider.getBoundingClientRect().width;
 
-        body.onmousedown = function (event) {
-            if (event.target !== thumbDiv)
-                return;
-
+        thumbDiv.onmousedown = function (event) {
             dragged = true;
-            if (!shiftX)
-                shiftX = event.clientX - 18;
-            // console.log('mousedown');
+            if (!shiftX) {
+                shiftX = event.clientX - thumbDiv.getBoundingClientRect().left;
+            };
         }
 
         body.onmousemove = function (event) {
             if (!dragged)
                 return;
 
-            thumbDiv.style.position = "absolute";
-            thumbDiv.style.top = (slider.getBoundingClientRect().top - 5) + 'px';
-            let newLeft = event.clientX - shiftX;
-            if (newLeft <= 8) {
-                newLeft = 8;
-                dragged = false;
-            }
-
-            if (newLeft >= 308) {
-                newLeft = 308;
-                dragged = false;
-            }
+            let newLeft = event.clientX - sliderLeft - shiftX;   // relative to slideer DIV
+            let sliderBorderWidth = slider.offsetWidth - slider.clientWidth;
+            newLeft = Math.max(newLeft, 0 + sliderBorderWidth / 2);
+            newLeft = Math.min(newLeft, slider.offsetWidth - thumbDiv.offsetWidth);
             thumbDiv.style.left = newLeft + 'px';
-            // console.log(`mousemove, ${event.clientLeft}`);
         }
 
         body.onmouseup = function (event) {
             dragged = false;
-
         }
 
         body.onmouseout = function (event) {
-            if (body.contains(event.relatedTarget))
-                return;
-
-            dragged = false;
-            console.log('onmouseout');
+            if (event.target === body && !event.target.contains(event.relatedTarget)) {
+                dragged = false;
+            }
         }
     </script>
-
 </body>
-
 </html>
