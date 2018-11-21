@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head title="">
+
+</head>
+
+<body id="body">
+    <div id="root">
+
+    </div>
+
+    <script>
+
+        function runOnKeys(func, ...keycodes) {
+
+            let pressedKeycodes = [];
+            document.addEventListener('keydown', (event) => {
+                if (event.repeat)
+                    return;
+                pressedKeycodes.push(event.code);
+                // console.log('keydown: ' + event.code);
+            });
+
+            document.addEventListener('keyup', (event) => {
+                console.log('keyup: ' + event.code);
+                console.log(pressedKeycodes);
+            });
+            // func.call();
+        }
+
+
+        runOnKeys(
+            () => alert("Hello!"),
+            "KeyQ",
+            "KeyW"
+        );
+    </script>
+</body>
+
+</html>
