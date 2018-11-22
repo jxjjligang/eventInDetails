@@ -18,20 +18,30 @@
             document.addEventListener('keydown', (event) => {
                 if (event.repeat)
                     return;
-                pressedKeycodes.push(event.code);
-                // console.log('keydown: ' + event.code);
+
+                let index = pressedKeycodes.indexOf(event.code);
+                if (index === -1)
+                    pressedKeycodes.push(event.code);
+                // console.log(pressedKeycodes);
+                if (keycodes.every(kc => pressedKeycodes.indexOf(kc) != -1))
+                    func.call();
             });
 
             document.addEventListener('keyup', (event) => {
-                console.log('keyup: ' + event.code);
-                console.log(pressedKeycodes);
+                let index = pressedKeycodes.indexOf(event.code);
+                if (index !== -1)
+                    pressedKeycodes.splice(index, 1);
+
+                if (keycodes.every(kc => pressedKeycodes.indexOf(kc) != -1))
+                    func.call();
+
             });
             // func.call();
         }
 
 
         runOnKeys(
-            () => alert("Hello!"),
+            () => console.log('Hello, condition satisfied!'),
             "KeyQ",
             "KeyW"
         );
